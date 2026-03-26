@@ -118,17 +118,21 @@ pixi run pyright
 6. **Time limits** enforced per task (from Task.time_limit field)
 7. **Lifecycle timeouts**: configure/activate/deactivate/cleanup/shutdown each have 60s max
 
-## Critical Gotchas (from community)
+## Toolkit Gotchas (from official bugs/PRs)
 
-- **F/T sensor gravity bias**: Raw wrench reads ~20N from gripper weight. ALWAYS subtract `controller_state.fts_tare_offset`
-- **Pose verification**: Sending a pose ≠ reaching it. Check `tcp_error` before proceeding
-- **Insertion events**: Subscribe to `/scoring/insertion_event` (String) for real-time insertion confirmation
-- **NIC card limits**: Docs say [0, 0.062]m but actual is ±0.084m from rail center
-- **Isaac Lab mismatch**: Known coordinate frame mismatch with Gazebo (Bug #424) - validate in Gazebo
-- **Delta-time scaling**: Velocity movements must use proper dt, NOT fixed frame rate (60x error possible)
-- **Force threshold**: Set at 19.5N max (penalty triggers at 20N sustained >1s)
-- **Plug-tip vs TCP**: Track plug-tip distance to port, not TCP distance
+- **F/T sensor gravity bias**: Raw wrench includes ~20N from gripper weight. ALWAYS subtract `controller_state.fts_tare_offset`
+- **Force penalty**: Triggers at 20N sustained >1s (-12pts). Leave safety margin
+- **set_pose_target()**: Now accepts custom stiffness/damping parameters (PR #430)
+- **Task board TFs**: Now published as static (PR #405) - lookups reliable
+- **Off-limit contacts**: Test with `gz topic -e -t /aic/gazebo/contacts/off_limit` (PR #431)
+- **Isaac Lab ↔ Gazebo**: Known coordinate frame mismatch (Bug #424) and 2x gravity compensation difference (Bug #434). Always validate in Gazebo
+- **MuJoCo ↔ Gazebo**: Apply dynamics tuning from PR #419 (damping, armature, friction) for transfer
+- **NIC card limits**: Check sample_config.yaml for actual ranges (docs may not match config)
+- **Zenoh mandatory**: `RMW_IMPLEMENTATION=rmw_zenoh_cpp` always (PR #416). Docker: don't overwrite `ZENOH_CONFIG_OVERRIDE` (PR #432)
+- **MuJoCo is dev only**: Evaluation runs exclusively in Gazebo
 
-## Competitive Intelligence
+## Intelligence Files
 
-See `.claude/rules/competitive-insights.md` for detailed community analysis, proven strategies, and competitor approaches. Key finding: state machine approach (INIT→APPROACH→ALIGN→INSERT→DONE) with PI velocity control is the best documented strategy (216/300 score).
+- `.claude/intel/competitor-approaches.md` - Approcci osservati da altri partecipanti (riferimento, non vincoli)
+- `.claude/intel/official-bugs-and-fixes.md` - Bug e fix confermati dal repo ufficiale
+- `.claude/intel/discourse-threads.md` - Indice thread forum Open Robotics
