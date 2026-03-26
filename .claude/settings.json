@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pixi install)",
+      "Bash(pixi run *)",
+      "Bash(git *)",
+      "Bash(docker compose *)",
+      "Bash(docker build *)",
+      "Bash(ros2 *)",
+      "Bash(colcon *)",
+      "Bash(python3 *)",
+      "Bash(black *)",
+      "Bash(isort *)",
+      "Bash(pyright *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(mkdir *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(docker push *)",
+      "Bash(aws *)"
+    ]
+  }
+}
