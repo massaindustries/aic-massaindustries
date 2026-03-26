@@ -117,3 +117,18 @@ pixi run pyright
 5. **1 submission per day** per team
 6. **Time limits** enforced per task (from Task.time_limit field)
 7. **Lifecycle timeouts**: configure/activate/deactivate/cleanup/shutdown each have 60s max
+
+## Critical Gotchas (from community)
+
+- **F/T sensor gravity bias**: Raw wrench reads ~20N from gripper weight. ALWAYS subtract `controller_state.fts_tare_offset`
+- **Pose verification**: Sending a pose ≠ reaching it. Check `tcp_error` before proceeding
+- **Insertion events**: Subscribe to `/scoring/insertion_event` (String) for real-time insertion confirmation
+- **NIC card limits**: Docs say [0, 0.062]m but actual is ±0.084m from rail center
+- **Isaac Lab mismatch**: Known coordinate frame mismatch with Gazebo (Bug #424) - validate in Gazebo
+- **Delta-time scaling**: Velocity movements must use proper dt, NOT fixed frame rate (60x error possible)
+- **Force threshold**: Set at 19.5N max (penalty triggers at 20N sustained >1s)
+- **Plug-tip vs TCP**: Track plug-tip distance to port, not TCP distance
+
+## Competitive Intelligence
+
+See `.claude/rules/competitive-insights.md` for detailed community analysis, proven strategies, and competitor approaches. Key finding: state machine approach (INIT→APPROACH→ALIGN→INSERT→DONE) with PI velocity control is the best documented strategy (216/300 score).
