@@ -122,13 +122,19 @@ pixi run pyright
 
 - **F/T sensor gravity bias**: Raw wrench includes ~20N from gripper weight. ALWAYS subtract `controller_state.fts_tare_offset`
 - **Force penalty**: Triggers at 20N sustained >1s (-12pts). Leave safety margin
+- **Observation can be None**: First call to `get_observation()` may return None. ALWAYS guard with `if obs is None` (Issue #339)
+- **set_cartesian_mode() stalls ~30%**: Add retry logic when switching control modes (Issue #209)
 - **set_pose_target()**: Now accepts custom stiffness/damping parameters (PR #430)
+- **Phantom collision plane**: Multi-axis Cartesian moves near task board can stall. Decompose into single-axis moves (Issue #444)
+- **NIC collision box wider than visual**: Actual collision extends beyond visible geometry (Issue #278)
 - **Task board TFs**: Now published as static (PR #405) - lookups reliable
 - **Off-limit contacts**: Test with `gz topic -e -t /aic/gazebo/contacts/off_limit` (PR #431)
+- **Jerk scoring varies with RTF**: Machine-dependent Real-Time Factor affects jerk calculation (Issue #303)
 - **Isaac Lab ↔ Gazebo**: Known coordinate frame mismatch (Bug #424) and 2x gravity compensation difference (Bug #434). Always validate in Gazebo
 - **MuJoCo ↔ Gazebo**: Apply dynamics tuning from PR #419 (damping, armature, friction) for transfer
 - **NIC card limits**: Check sample_config.yaml for actual ranges (docs may not match config)
 - **Zenoh mandatory**: `RMW_IMPLEMENTATION=rmw_zenoh_cpp` always (PR #416). Docker: don't overwrite `ZENOH_CONFIG_OVERRIDE` (PR #432)
+- **POSIX SHM crash**: Most common Docker issue. Set `transport/shared_memory/enabled=false` in Zenoh config (Issue #377)
 - **MuJoCo is dev only**: Evaluation runs exclusively in Gazebo
 
 ## Intelligence Files
